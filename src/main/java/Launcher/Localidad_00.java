@@ -27,14 +27,13 @@ public class Localidad_00 {
         }
         admBESA.addService("Pares");
         admBESA.addService("Impares");
-        admBESA.ser
         for (int i = 0; i < 10; i++) {
             if (i % 2 == 0) {
                 String alias = "Warehouse_" + i;
                 WarehouseAgent agent = AgentFactory.agentInstance(WarehouseAgent.class, alias, 0.27, new WarehouseState());
                 if (agent != null) {
                     agent.start();
-                    admBESA.bindSPServiceInDirectory(agent.getAid(), "Pares");
+                    admBESA.bindService(agent.getAid(), "Pares");
 
                     admBESA.registerAgent(agent,
                             alias,

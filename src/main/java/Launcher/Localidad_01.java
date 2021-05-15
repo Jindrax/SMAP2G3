@@ -31,7 +31,7 @@ public class Localidad_01 {
                 WarehouseAgent agent = AgentFactory.agentInstance(WarehouseAgent.class, alias, 0.27, new WarehouseState());
                 if (agent != null) {
                     agent.start();
-                    admBESA.bindSPServiceInDirectory(agent.getAid(), "Impares");
+                    admBESA.bindService(agent.getAid(), "Impares");
                     admBESA.registerAgent(agent,
                             alias,
                             alias
