@@ -1,0 +1,16 @@
+sma/grupo3/Retailer/Agents/Warehouse/Behavior/TestGuard.java
+ sma.grupo3.Retailer.Agents.Warehouse.Behavior.TestGuard
+sma/grupo3/Retailer/Utils/Factory/AgentFactory.java
+ sma.grupo3.Retailer.Utils.Factory.AgentFactory
+sma/grupo3/Retailer/Agents/Warehouse/WarehouseState.java
+ sma.grupo3.Retailer.Agents.Warehouse.WarehouseState
+DistributedAgent/DistributedAgent.java
+ DistributedAgent.DistributedAgent
+DistributedAgent/DistributedAgentState.java
+ DistributedAgent.DistributedAgentState
+sma/grupo3/Retailer/Agents/Warehouse/WarehouseAgent.java
+ sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent
+Launcher/Localidad_01.java
+ Launcher.Localidad_01
+Launcher/Localidad_00.java
+ Launcher.Localidad_00
