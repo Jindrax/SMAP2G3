@@ -1,6 +1,5 @@
 package sma.grupo3.Retailer.Utils.Factory;
 
-import BESA.ExceptionBESA;
 import BESA.Kernel.Agent.StateBESA;
 import BESA.Kernel.Agent.StructBESA;
 
@@ -14,7 +13,7 @@ import java.util.Optional;
 public class AgentFactory {
 
     public static <T> T agentInstance(Class<T> agentClass, String alias, double passwd, StateBESA state) {
-        String location = agentClass.getProtectionDomain().getCodeSource().getLocation().getPath() + agentClass.getCanonicalName().replace(".", "/");
+        String location = "src/main/java/" + agentClass.getCanonicalName().replace(".", "/");
         String behaviorLocation = location.substring(0, location.lastIndexOf("/")) + "/Behavior";
         String classpath = agentClass.getCanonicalName().substring(0, agentClass.getCanonicalName().lastIndexOf("."));
         List<Class<?>> behaviors = getBehaviors(behaviorLocation, classpath);
@@ -24,7 +23,7 @@ public class AgentFactory {
         }
         try {
             Optional<Constructor<?>> constructor = Arrays.stream(agentClass.getConstructors()).findFirst();
-            if(constructor.isPresent()){
+            if (constructor.isPresent()) {
                 return (T) constructor.get().newInstance(alias, state, structBESA, passwd);
             }
             return null;

@@ -1,4 +1,4 @@
-package DistributedAgent;
+package sma.grupo3.Retailer.Agents.Distributed;
 
 import BESA.Kernel.Agent.StateBESA;
 

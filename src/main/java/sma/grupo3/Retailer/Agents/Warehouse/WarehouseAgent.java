@@ -13,7 +13,7 @@ public class WarehouseAgent extends AgentBESA {
 
     @Override
     public void setupAgent() {
-        System.out.println(this.getAlias() + " registrado");
+
     }
 
     @Override

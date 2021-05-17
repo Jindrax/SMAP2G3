@@ -1,4 +1,4 @@
-package sma.grupo3.Retailer.Agents.Warehouse.Behavior;
+package sma.grupo3.Retailer.Agents.Distributed.Behavior;
 
 import BESA.Kernel.Agent.Event.EventBESA;
 import BESA.Kernel.Agent.GuardBESA;

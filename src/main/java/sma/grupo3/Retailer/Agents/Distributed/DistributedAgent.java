@@ -1,4 +1,4 @@
-package DistributedAgent;
+package sma.grupo3.Retailer.Agents.Distributed;
 
 import BESA.ExceptionBESA;
 import BESA.Kernel.Agent.AgentBESA;
@@ -8,8 +8,7 @@ import BESA.Kernel.Agent.StateBESA;
 import BESA.Kernel.Agent.StructBESA;
 import BESA.Kernel.System.Directory.AgHandlerBESA;
 import BESA.Log.ReportBESA;
-import sma.grupo3.Retailer.Agents.Warehouse.Behavior.TestGuard;
-import sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent;
+import sma.grupo3.Retailer.Agents.Distributed.Behavior.TestGuard;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,10 +41,9 @@ public class DistributedAgent extends AgentBESA {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(WarehouseAgent.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DistributedAgent.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                System.out.println(this.getAdmLocal().getHandlerByAlias(state.getLookupAgent()).getAlias());
                 ah = this.getAdmLocal().getHandlerByAlias(state.getLookupAgent());
                 EventBESA msj = new EventBESA(
                         TestGuard.class.getName(),
@@ -54,7 +52,6 @@ public class DistributedAgent extends AgentBESA {
                 ah.sendEvent(msj);
                 ready = true;
             } catch (ExceptionBESA ex) {
-//                ex.printStackTrace();
                 ReportBESA.info("Checkeo fallido");
             }
         }
