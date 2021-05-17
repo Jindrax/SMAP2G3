@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 public class Services {
     private static ControllerAgent agent;
     private static Localities thisLocality;
-    private static final Map<String, List<String>> globalDirectory = new Hashtable<>();
+    private static final Map<String, Set<String>> globalDirectory = new Hashtable<>();
     private static final Map<Localities, Map<String, List<String>>> directory = new Hashtable<Localities, Map<String, List<String>>>();
 
     public static Localities getThisLocality() {
@@ -20,11 +20,15 @@ public class Services {
     }
 
     public static void bindToService(String id, String service) {
-        List<String> gDirectory = globalDirectory.computeIfAbsent(service, s -> Collections.synchronizedList(new ArrayList<>()));
+        Set<String> gDirectory = globalDirectory.computeIfAbsent(service, s -> Collections.synchronizedSet(new HashSet<>()));
         gDirectory.add(id);
         List<String> localityDirectory = directory.computeIfAbsent(thisLocality, localities -> new Hashtable<>()).computeIfAbsent(service, s -> Collections.synchronizedList(new ArrayList<>()));
         localityDirectory.add(id);
         agent.notifyServiceUpdate(service, localityDirectory);
+    }
+
+    public static void bindBatchToService(Set<String> ids, String service){
+
     }
 
     public static boolean unbindFromService(String id, String service) {

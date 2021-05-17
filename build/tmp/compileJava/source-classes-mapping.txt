@@ -1,35 +1,21 @@
-sma/grupo3/Retailer/Agents/Controller/Data/ServiceCreateFromLocality.java
- sma.grupo3.Retailer.Agents.Controller.Data.ServiceCreateFromLocality
 sma/grupo3/Retailer/DistributedBehavior/Localities.java
  sma.grupo3.Retailer.DistributedBehavior.Localities
 sma/grupo3/Retailer/Agents/Controller/Data/ServiceUpdateFromLocality.java
  sma.grupo3.Retailer.Agents.Controller.Data.ServiceUpdateFromLocality
+sma/grupo3/Retailer/Utils/Configuration.java
+ sma.grupo3.Retailer.Utils.Configuration
 sma/grupo3/Retailer/Agents/Distributed/DistributedAgent.java
  sma.grupo3.Retailer.Agents.Distributed.DistributedAgent
-sma/grupo3/Retailer/Agents/Controller/Behavior/OnServiceUpdated.java
- sma.grupo3.Retailer.Agents.Controller.Behavior.OnServiceUpdated
+sma/grupo3/Retailer/SharedDomain/OrderState.java
+ sma.grupo3.Retailer.SharedDomain.OrderState
 sma/grupo3/Retailer/Agents/Distributed/Behavior/TestGuard.java
  sma.grupo3.Retailer.Agents.Distributed.Behavior.TestGuard
-sma/grupo3/Retailer/Utils/Factory/AgentFactory.java
- sma.grupo3.Retailer.Utils.Factory.AgentFactory
-sma/grupo3/Retailer/Agents/Distributed/DistributedAgentState.java
- sma.grupo3.Retailer.Agents.Distributed.DistributedAgentState
-sma/grupo3/Retailer/Agents/Controller/ControllerState.java
- sma.grupo3.Retailer.Agents.Controller.ControllerState
-sma/grupo3/Retailer/Agents/Warehouse/WarehouseState.java
- sma.grupo3.Retailer.Agents.Warehouse.WarehouseState
-sma/grupo3/Retailer/Agents/Controller/ControllerAgent.java
- sma.grupo3.Retailer.Agents.Controller.ControllerAgent
-sma/grupo3/Retailer/Agents/Warehouse/WarehouseAgent.java
- sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent
-Launcher/Localidad_00.java
- Launcher.Localidad_00
- Launcher.Localidad_00$1
-sma/grupo3/Retailer/DistributedBehavior/Services.java
- sma.grupo3.Retailer.DistributedBehavior.Services
-Launcher/Localidad_01.java
- Launcher.Localidad_01
- Launcher.Localidad_01$1
+sma/grupo3/Retailer/Agents/Warehouse/Behavior/OnCustomerOrderPlacedWarehouseGuard.java
+ sma.grupo3.Retailer.Agents.Warehouse.Behavior.OnCustomerOrderPlacedWarehouseGuard
+sma/grupo3/Retailer/Agents/Transporter/TransporterAgent.java
+ sma.grupo3.Retailer.Agents.Transporter.TransporterAgent
+sma/grupo3/Retailer/Agents/Controller/Behavior/OnEchoFromContainerControllerGuard.java
+ sma.grupo3.Retailer.Agents.Controller.Behavior.OnEchoFromContainerControllerGuard
 sma/grupo3/Retailer/DistributedBehavior/ConnectionMap.java
  sma.grupo3.Retailer.DistributedBehavior.ConnectionMap
  sma.grupo3.Retailer.DistributedBehavior.ConnectionMap$1
@@ -40,5 +26,49 @@ sma/grupo3/Retailer/DistributedBehavior/ConnectionMap.java
  sma.grupo3.Retailer.DistributedBehavior.ConnectionMap$1$5
  sma.grupo3.Retailer.DistributedBehavior.ConnectionMap$1$6
  sma.grupo3.Retailer.DistributedBehavior.ConnectionMap$EdgeConnection
+sma/grupo3/Retailer/Agents/Warehouse/WarehouseAgent.java
+ sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent
+sma/grupo3/Retailer/Agents/Warehouse/WarehouseState.java
+ sma.grupo3.Retailer.Agents.Warehouse.WarehouseState
+sma/grupo3/Retailer/Agents/Transporter/TransporterState.java
+ sma.grupo3.Retailer.Agents.Transporter.TransporterState
+sma/grupo3/Retailer/Agents/Customer/CustomerState.java
+ sma.grupo3.Retailer.Agents.Customer.CustomerState
+sma/grupo3/Retailer/SharedDomain/Statistics.java
+ sma.grupo3.Retailer.SharedDomain.Statistics
+sma/grupo3/Retailer/DistributedBehavior/ContainerDeployer.java
+ sma.grupo3.Retailer.DistributedBehavior.ContainerDeployer
+sma/grupo3/Retailer/Agents/Customer/CustomerAgent.java
+ sma.grupo3.Retailer.Agents.Customer.CustomerAgent
+sma/grupo3/Retailer/SharedDomain/CustomerRating.java
+ sma.grupo3.Retailer.SharedDomain.CustomerRating
+sma/grupo3/Retailer/Agents/Controller/Data/EchoFromContainer.java
+ sma.grupo3.Retailer.Agents.Controller.Data.EchoFromContainer
 Launcher/Localidad_Test.java
  Launcher.Localidad_Test
+sma/grupo3/Retailer/Utils/Factory/AgentFactory.java
+ sma.grupo3.Retailer.Utils.Factory.AgentFactory
+sma/grupo3/Retailer/Agents/Distributed/DistributedAgentState.java
+ sma.grupo3.Retailer.Agents.Distributed.DistributedAgentState
+sma/grupo3/Retailer/SharedDomain/Catalog.java
+ sma.grupo3.Retailer.SharedDomain.Catalog
+sma/grupo3/Retailer/SharedDomain/CustomerOrder.java
+ sma.grupo3.Retailer.SharedDomain.CustomerOrder
+sma/grupo3/Retailer/DistributedBehavior/StandardServices.java
+ sma.grupo3.Retailer.DistributedBehavior.StandardServices
+sma/grupo3/Retailer/Utils/Randomizer.java
+ sma.grupo3.Retailer.Utils.Randomizer
+sma/grupo3/Retailer/Agents/Controller/ControllerState.java
+ sma.grupo3.Retailer.Agents.Controller.ControllerState
+Launcher/Localidad_00.java
+ Launcher.Localidad_00
+ Launcher.Localidad_00$1
+sma/grupo3/Retailer/DistributedBehavior/Services.java
+ sma.grupo3.Retailer.DistributedBehavior.Services
+Launcher/Localidad_01.java
+ Launcher.Localidad_01
+ Launcher.Localidad_01$1
+sma/grupo3/Retailer/Agents/Controller/ControllerAgent.java
+ sma.grupo3.Retailer.Agents.Controller.ControllerAgent
+sma/grupo3/Retailer/Agents/Controller/Behavior/OnServiceUpdatedControllerGuard.java
+ sma.grupo3.Retailer.Agents.Controller.Behavior.OnServiceUpdatedControllerGuard

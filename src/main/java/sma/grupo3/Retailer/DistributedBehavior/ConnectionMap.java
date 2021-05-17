@@ -4,6 +4,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import sma.grupo3.Retailer.Utils.Configuration;
 
 import java.util.*;
 
@@ -12,10 +13,11 @@ public class ConnectionMap {
     static class EdgeConnection {
         public Localities destination;
         public double weight;
+        private static final double scaleFactor = Configuration.getDouble("TIME_SCALE_FACTOR");
 
         public EdgeConnection(Localities destination, double weight) {
             this.destination = destination;
-            this.weight = weight;
+            this.weight = weight * scaleFactor;
         }
     }
 
@@ -72,7 +74,7 @@ public class ConnectionMap {
         return Graphs.neighborSetOf(ConnectionMap.map, local);
     }
 
-    public double getTimeFromTo(Localities from, Localities to){
+    public double getTimeFromTo(Localities from, Localities to) {
         return map.getEdgeWeight(map.getEdge(from, to));
     }
 

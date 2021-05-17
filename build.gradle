@@ -16,6 +16,7 @@ dependencies {
     compile files('libs/LocalBESA.jar')
     compile files('libs/RemoteBESA.jar')
     compile 'org.jgrapht:jgrapht-core:1.4.0'
+    compile 'io.github.cdimascio:java-dotenv:3.0.0'
 }
 
 test {
