@@ -21,7 +21,6 @@ import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,6 +88,7 @@ public class ControllerAgent extends AgentBESA {
 
     public void deployFleet() {
         ControllerState state = (ControllerState) this.getState();
+        Set<String> batchIds = new HashSet<>();
         for (int i = 0; i < Services.getThisLocality().fleetSize; i++) {
             TransporterAgent transporterAgent = AgentFactory.agentInstance(TransporterAgent.class,
                     Services.getThisLocality().value + "_" + StandardServices.TRANSPORTER + "_" + i,
@@ -97,13 +97,14 @@ public class ControllerAgent extends AgentBESA {
             if (transporterAgent != null) {
                 state.addTransporterToFleet(transporterAgent);
                 transporterAgent.start();
-                Services.bindToService(transporterAgent.getAid(), StandardServices.TRANSPORTER.value);
-                Services.bindToService(transporterAgent.getAid(), Services.getThisLocality().value + StandardServices.TRANSPORTER.value);
+                batchIds.add(transporterAgent.getAid());
             }
         }
+        Services.bindBatchToService(batchIds, StandardServices.TRANSPORTER.value);
+        Services.bindBatchToService(batchIds, Services.getThisLocality().value + StandardServices.TRANSPORTER.value);
     }
 
-    public void notifyServiceUpdate(String service, List<String> update) {
+    public void notifyServiceUpdate(String service, Set<String> update) {
         ControllerState state = (ControllerState) this.getState();
         EventBESA eventBESA = new EventBESA(OnServiceUpdatedControllerGuard.class.getName(), new ServiceUpdateFromLocality(Services.getThisLocality(), service, update));
         for (String aliasLocality : state.getKnownLocalities()) {

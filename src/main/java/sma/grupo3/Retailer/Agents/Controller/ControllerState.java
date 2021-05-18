@@ -6,16 +6,16 @@ import sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ControllerState extends StateBESA {
     private Localities locality;
-    private List<String> knownLocalities;
+    private Set<String> knownLocalities;
     private WarehouseAgent warehouse;
     private Map<String, TransporterAgent> fleet;
 
-    public ControllerState(Localities locality, List<String> knownLocalities) {
+    public ControllerState(Localities locality, Set<String> knownLocalities) {
         this.locality = locality;
         this.knownLocalities = knownLocalities;
         this.fleet = new Hashtable<String, TransporterAgent>();
@@ -25,7 +25,7 @@ public class ControllerState extends StateBESA {
         return locality;
     }
 
-    public List<String> getKnownLocalities() {
+    public Set<String> getKnownLocalities() {
         return knownLocalities;
     }
 

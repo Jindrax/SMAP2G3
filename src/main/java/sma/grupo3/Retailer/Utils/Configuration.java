@@ -13,6 +13,10 @@ public class Configuration {
         return Double.parseDouble(dotenv.get(key));
     }
 
+    public static long getLong(String key) {
+        return Long.parseLong(dotenv.get(key));
+    }
+
     public static String get(String key) {
         return dotenv.get(key);
     }

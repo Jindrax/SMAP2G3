@@ -3,14 +3,14 @@ package sma.grupo3.Retailer.Agents.Controller.Data;
 import BESA.Kernel.Agent.Event.DataBESA;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 
-import java.util.List;
+import java.util.Set;
 
 public class ServiceUpdateFromLocality extends DataBESA {
     Localities fromLocality;
     String service;
-    List<String> update;
+    Set<String> update;
 
-    public ServiceUpdateFromLocality(Localities fromLocality, String service, List<String> update) {
+    public ServiceUpdateFromLocality(Localities fromLocality, String service, Set<String> update) {
         this.fromLocality = fromLocality;
         this.service = service;
         this.update = update;
@@ -24,7 +24,7 @@ public class ServiceUpdateFromLocality extends DataBESA {
         return service;
     }
 
-    public List<String> getUpdate() {
+    public Set<String> getUpdate() {
         return update;
     }
 }
