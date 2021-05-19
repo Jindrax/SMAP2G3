@@ -79,8 +79,8 @@ public class ControllerAgent extends AgentBESA {
                     0.5,
                     new WarehouseState());
             if (warehouse != null) {
-                state.setWarehouse(warehouse);
                 warehouse.start();
+                state.setWarehouse(warehouse);
                 Services.bindToService(warehouse.getAid(), StandardServices.WAREHOUSE.value);
             }
         }
@@ -93,10 +93,10 @@ public class ControllerAgent extends AgentBESA {
             TransporterAgent transporterAgent = AgentFactory.agentInstance(TransporterAgent.class,
                     Services.getThisLocality().value + "_" + StandardServices.TRANSPORTER + "_" + i,
                     0.6,
-                    new TransporterState());
+                    new TransporterState(Services.getThisLocality()));
             if (transporterAgent != null) {
-                state.addTransporterToFleet(transporterAgent);
                 transporterAgent.start();
+                state.addTransporterToFleet(transporterAgent);
                 batchIds.add(transporterAgent.getAid());
             }
         }

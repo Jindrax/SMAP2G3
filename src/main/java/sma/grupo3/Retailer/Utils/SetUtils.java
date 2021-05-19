@@ -10,8 +10,8 @@ public class SetUtils {
             int numericIndex1 = o1.lastIndexOf("_");
             int numericIndex2 = o2.lastIndexOf("_");
             if (o1.substring(0, numericIndex1).equals(o2.substring(0, numericIndex2))) {
-                int a = Integer.parseInt(o1.substring(numericIndex1 + 1, o1.length()));
-                int b = Integer.parseInt(o2.substring(numericIndex2 + 1, o2.length()));
+                int a = Integer.parseInt(o1.substring(numericIndex1 + 1));
+                int b = Integer.parseInt(o2.substring(numericIndex2 + 1));
                 return Integer.compare(a, b);
             } else {
                 return o1.compareTo(o2);

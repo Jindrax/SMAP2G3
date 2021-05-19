@@ -2,6 +2,7 @@ package sma.grupo3.Retailer.DistributedBehavior;
 
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import sma.grupo3.Retailer.Utils.Configuration;
@@ -20,6 +21,10 @@ public class ConnectionMap {
             this.weight = weight * scaleFactor;
         }
     }
+
+    private static final double scaleFactor = Configuration.getDouble("TIME_SCALE_FACTOR");
+
+    private static final double waitTime = 100000;
 
     static Map<Localities, List<EdgeConnection>> directory = new HashMap<Localities, List<EdgeConnection>>() {{
         put(Localities.CHAPINERO, new ArrayList<EdgeConnection>() {{
@@ -70,12 +75,22 @@ public class ConnectionMap {
         return returnMap;
     }
 
-    public Set<Localities> getNeighbours(Localities local) {
+    public static Set<Localities> getNeighbours(Localities local) {
         return Graphs.neighborSetOf(ConnectionMap.map, local);
     }
 
-    public double getTimeFromTo(Localities from, Localities to) {
-        return map.getEdgeWeight(map.getEdge(from, to));
+    public static List<Localities> shortestPath(Localities from, Localities to) {
+        DijkstraShortestPath<Localities, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath<Localities, DefaultWeightedEdge>(map);
+        List<Localities> path = dijkstra.getPath(from, to).getVertexList();
+        return path.subList(1, path.size());
+    }
+
+    public static double getTimeFromTo(Localities from, Localities to) {
+        if (from == to) {
+            return waitTime * scaleFactor;
+        }
+        DijkstraShortestPath<Localities, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath<Localities, DefaultWeightedEdge>(map);
+        return dijkstra.getPathWeight(from, to);
     }
 
 }

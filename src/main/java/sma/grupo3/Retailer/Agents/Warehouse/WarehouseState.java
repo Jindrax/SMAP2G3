@@ -19,7 +19,7 @@ public class WarehouseState extends StateBESA {
     public WarehouseState() {
         this.stock = new Hashtable<Catalog, Integer>();
         for (Catalog catalog : Catalog.values()) {
-            this.stock.put(catalog, Randomizer.randomInt());
+            this.stock.put(catalog, Randomizer.randomInt(100, 500));
         }
         this.customerOrders = new ArrayList<>();
         this.auctions = new Hashtable<>();

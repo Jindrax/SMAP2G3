@@ -9,7 +9,6 @@ public class OnServiceUpdatedControllerGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {
         ServiceUpdateFromLocality data = (ServiceUpdateFromLocality) eventBESA.getData();
-        System.out.printf("Update to %s: %s%n", data.getService(), data.getUpdate().toString());
         Services.updateServiceFromLocality(data.getFromLocality(), data.getService(), data.getUpdate());
     }
 }

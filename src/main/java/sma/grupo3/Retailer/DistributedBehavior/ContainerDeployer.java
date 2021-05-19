@@ -6,15 +6,20 @@ import sma.grupo3.Retailer.Agents.Controller.ControllerAgent;
 import sma.grupo3.Retailer.Agents.Controller.ControllerState;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ContainerDeployer {
-    public static AdmBESA deploy(String containerConfig, Localities locality, Set<String> knownLocalities) {
+    public static AdmBESA deploy(String containerConfig, Localities locality) {
         AdmBESA admBESA = AdmBESA.getInstance(containerConfig);
         ControllerAgent controllerAgent = AgentFactory.agentInstance(ControllerAgent.class, locality.value, 0.24,
-                new ControllerState(locality, knownLocalities));
+                new ControllerState(
+                        locality,
+                        Arrays.stream(Localities.values()).filter(localities -> localities.enable).filter(localities -> locality != localities).map(localities -> localities.value).collect(Collectors.toSet())
+                ));
         if (controllerAgent != null) {
             admBESA.registerAgent(controllerAgent, locality.value, locality.value);
             controllerAgent.start();
@@ -26,13 +31,13 @@ public class ContainerDeployer {
             } catch (InterruptedException ex) {
                 Logger.getLogger(ControllerAgent.class.getName()).log(Level.SEVERE, null, ex);
             }
-            for (String tId : Services.getGlobalServiceProviders(StandardServices.WAREHOUSE.value)) {
-                try {
-                    System.out.println(admBESA.getHandlerByAid(tId).getAlias());
-                } catch (ExceptionBESA exceptionBESA) {
-                    exceptionBESA.printStackTrace();
-                }
-            }
+//            for (String tId : Services.getGlobalServiceProviders(StandardServices.WAREHOUSE.value)) {
+//                try {
+//                    System.out.println(admBESA.getHandlerByAid(tId).getAlias());
+//                } catch (ExceptionBESA exceptionBESA) {
+//                    exceptionBESA.printStackTrace();
+//                }
+//            }
         }
         return admBESA;
     }

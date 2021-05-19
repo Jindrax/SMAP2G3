@@ -8,6 +8,7 @@ import BESA.Kernel.Agent.StateBESA;
 import BESA.Kernel.Agent.StructBESA;
 import sma.grupo3.Retailer.Agents.Customer.Data.CustomerOrderWrapper;
 import sma.grupo3.Retailer.Agents.Warehouse.Behavior.OnCustomerOrderPlacedWarehouseGuard;
+import sma.grupo3.Retailer.Agents.Warehouse.Data.CustomerOrderWarehouseResponse;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
 
@@ -38,5 +39,23 @@ public class CustomerAgent extends AgentBESA {
 
     public CustomerAgent(String alias, StateBESA state, StructBESA structAgent, double passwd) throws KernelAgentExceptionBESA {
         super(alias, state, structAgent, passwd);
+    }
+
+    public double rateOrder(CustomerOrderWarehouseResponse response) {
+        if (response.isCanceled()) {
+            return 5.0;
+        }
+        return 10.0;
+    }
+
+    public double rateOrder(long deliveryTime, double predictedTime) {
+        double score = 10 + (10 * ((predictedTime - (deliveryTime / 10.0)) / predictedTime));
+        if (score > 10) {
+            return 10;
+        }
+        if (score < 0) {
+            return 0;
+        }
+        return score;
     }
 }

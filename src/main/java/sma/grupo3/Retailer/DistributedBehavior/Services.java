@@ -48,8 +48,10 @@ public class Services {
         return false;
     }
 
-    public static Set<String> getLocalityServiceProviders(Localities locality, String service) {
-        return directory.computeIfAbsent(locality, localities -> new Hashtable<>()).computeIfAbsent(service, s -> new HashSet<>());
+    public static List<String> getLocalityServiceProviders(Localities locality, String service) {
+        List<String> localDirectory = new ArrayList<>(directory.computeIfAbsent(locality, localities -> new Hashtable<>()).computeIfAbsent(service, s -> new HashSet<>()));
+        Collections.shuffle(localDirectory);
+        return localDirectory;
     }
 
     public static void updateServiceFromLocality(Localities locality, String service, Set<String> update) {
@@ -60,8 +62,10 @@ public class Services {
         globalService.addAll(update);
     }
 
-    public static Set<String> getGlobalServiceProviders(String service) {
-        return globalDirectory.get(service);
+    public static List<String> getGlobalServiceProviders(String service) {
+        List<String> localDirectory = new ArrayList<>(globalDirectory.get(service));
+        Collections.shuffle(localDirectory);
+        return localDirectory;
     }
 
     public static void setAgent(ControllerAgent _agent) {

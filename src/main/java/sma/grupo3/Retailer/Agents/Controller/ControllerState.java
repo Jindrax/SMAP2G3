@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class ControllerState extends StateBESA {
-    private Localities locality;
-    private Set<String> knownLocalities;
+    private final Localities locality;
+    private final Set<String> knownLocalities;
     private WarehouseAgent warehouse;
-    private Map<String, TransporterAgent> fleet;
+    private final Map<String, TransporterAgent> fleet;
 
     public ControllerState(Localities locality, Set<String> knownLocalities) {
         this.locality = locality;
