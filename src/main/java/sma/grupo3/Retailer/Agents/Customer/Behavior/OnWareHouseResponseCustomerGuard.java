@@ -15,7 +15,11 @@ public class OnWareHouseResponseCustomerGuard extends GuardBESA {
         CustomerAgent agent = (CustomerAgent) this.agent;
         CustomerOrderWarehouseResponse response = (CustomerOrderWarehouseResponse) eventBESA.getData();
         if (response.isCanceled()) {
-            ConsoleRainbow.warning(String.format("[%s]: mi pedido ha sido cancelado, califico el servicio en %f", this.agent.getAlias(), 5.0));
+            ConsoleRainbow.warning(String.format("[%s]: mi pedido de %d %s ha sido cancelado, califico el servicio en %f",
+                    this.agent.getAlias(),
+                    response.getOrder().getOrderQuantity(),
+                    response.getOrder().getOrderProduct(),
+                    5.0));
             Statistics.registerFinalizedOrder(new CustomerRating(agent.getAid(), response.getOrder(), agent.rateOrder(response)));
             try {
                 this.getAgent().getAdmLocal().killAgent(this.agent.getAid(), this.agent.getPassword());

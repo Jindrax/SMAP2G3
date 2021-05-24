@@ -1,31 +1,20 @@
 package sma.grupo3.Retailer.SharedDomain;
 
 import BESA.Kernel.Agent.Event.DataBESA;
-import sma.grupo3.Retailer.Agents.Transporter.Data.CustomerOrderDelivery;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
+
+import java.util.Objects;
 
 public class TransportCommand extends DataBESA {
     Localities destination;
     CustomerOrder order;
-    boolean isDelivery;
-    boolean isPickup;
-    CustomerOrderDelivery delivery;
+    TransportCommandType commandType;
     boolean fulfilled;
 
-    public TransportCommand(Localities destination, CustomerOrder order, boolean isPickup) {
+    public TransportCommand(Localities destination, CustomerOrder order, TransportCommandType commandType) {
         this.destination = destination;
         this.order = order;
-        this.isPickup = isPickup;
-        this.isDelivery = !isPickup;
-        this.fulfilled = false;
-    }
-
-    public TransportCommand(Localities destination, CustomerOrder order, boolean isDelivery, CustomerOrderDelivery delivery) {
-        this.destination = destination;
-        this.order = order;
-        this.isDelivery = isDelivery;
-        this.isPickup = !isDelivery;
-        this.delivery = delivery;
+        this.commandType = commandType;
         this.fulfilled = false;
     }
 
@@ -37,16 +26,8 @@ public class TransportCommand extends DataBESA {
         return order;
     }
 
-    public boolean isDelivery() {
-        return isDelivery;
-    }
-
-    public boolean isPickup() {
-        return isPickup;
-    }
-
-    public CustomerOrderDelivery getDelivery() {
-        return delivery;
+    public TransportCommandType getCommandType() {
+        return commandType;
     }
 
     public void fullFiled() {
@@ -55,5 +36,26 @@ public class TransportCommand extends DataBESA {
 
     public boolean isFulfilled() {
         return fulfilled;
+    }
+
+    public void prepareToTransfer() {
+        this.commandType = TransportCommandType.TRANSFER;
+    }
+
+    public void cancelTransfer() {
+        this.commandType = TransportCommandType.DELIVERY;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TransportCommand that = (TransportCommand) o;
+        return fulfilled == that.fulfilled && destination == that.destination && Objects.equals(order, that.order) && commandType == that.commandType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(destination, order, commandType, fulfilled);
     }
 }

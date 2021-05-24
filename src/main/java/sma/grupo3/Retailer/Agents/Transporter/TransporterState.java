@@ -4,12 +4,14 @@ import BESA.Kernel.Agent.Event.EventBESA;
 import BESA.Kernel.Agent.StateBESA;
 import sma.grupo3.Retailer.Agents.Customer.Behavior.OnOrderDeliveredCustomerGuard;
 import sma.grupo3.Retailer.Agents.Customer.Behavior.OnTransporterResponseCustomerGuard;
+import sma.grupo3.Retailer.Agents.Transporter.Behavior.OnOrderTransferredTransporterGuard;
 import sma.grupo3.Retailer.Agents.Transporter.Data.CustomerOrderDelivery;
-import sma.grupo3.Retailer.Agents.Warehouse.Data.TransporterOrderAuction;
+import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterCommandAuction;
 import sma.grupo3.Retailer.DistributedBehavior.ConnectionMap;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
+import sma.grupo3.Retailer.SharedDomain.TransportCommandType;
 
 import java.util.*;
 
@@ -20,7 +22,7 @@ public class TransporterState extends StateBESA {
     private final List<TransportCommand> commandList;
     private final Timer currentMovement;
     private final double maxWeightCapacity;
-    Map<CustomerOrder, TransporterOrderAuction> transporterAuctions;
+    Map<TransportCommand, TransporterCommandAuction> transporterAuctions;
 
     public TransporterState(Localities currentLocality) {
         this.baseLocality = currentLocality;
@@ -41,24 +43,33 @@ public class TransporterState extends StateBESA {
     }
 
     public EventBESA executeCommand(TransportCommand command) {
-        EventBESA customerNotification = null;
-        if (command.isDelivery()) {
-            this.currentLoad.remove(command.getOrder());
-            CustomerOrderDelivery delivery = command.getDelivery();
-            delivery.delivered();
-            customerNotification = new EventBESA(OnOrderDeliveredCustomerGuard.class.getName(), delivery);
-        }
-        if (command.isPickup()) {
-            CustomerOrder order = command.getOrder();
-            this.currentLoad.add(command.getOrder());
-            CustomerOrderDelivery delivery = new CustomerOrderDelivery(ConnectionMap.getTimeFromTo(command.getDestination(), order.getCustomerLocality()), order);
-            commandList.add(new TransportCommand(
-                    order.getCustomerLocality(),
-                    order,
-                    true,
-                    delivery
-            ));
-            customerNotification = new EventBESA(OnTransporterResponseCustomerGuard.class.getName(), delivery);
+        EventBESA customerNotification;
+        switch (command.getCommandType()) {
+            case DELIVERY:
+                this.currentLoad.remove(command.getOrder());
+                customerNotification = new EventBESA(OnOrderDeliveredCustomerGuard.class.getName(), command.getOrder());
+                break;
+            case PICKUP:
+                this.currentLoad.add(command.getOrder());
+                CustomerOrderDelivery delivery = new CustomerOrderDelivery(ConnectionMap.getTimeFromTo(command.getDestination(), command.getOrder().getCustomerLocality()), command.getOrder());
+                commandList.add(new TransportCommand(
+                        command.getOrder().getCustomerLocality(),
+                        command.getOrder(),
+                        TransportCommandType.DELIVERY
+                ));
+                customerNotification = new EventBESA(OnTransporterResponseCustomerGuard.class.getName(), delivery);
+                break;
+            case TRANSFER:
+                this.currentLoad.add(command.getOrder());
+                commandList.add(new TransportCommand(
+                        command.getOrder().getCustomerLocality(),
+                        command.getOrder(),
+                        TransportCommandType.DELIVERY
+                ));
+                customerNotification = new EventBESA(OnOrderTransferredTransporterGuard.class.getName(), command);
+                break;
+            default:
+                customerNotification = new EventBESA("", null);
         }
         command.fullFiled();
         return customerNotification;
@@ -92,11 +103,15 @@ public class TransporterState extends StateBESA {
         return maxWeightCapacity;
     }
 
-    public Map<CustomerOrder, TransporterOrderAuction> getTransporterAuctions() {
+    public Map<TransportCommand, TransporterCommandAuction> getTransporterAuctions() {
         return transporterAuctions;
     }
 
-    public void startTransporterAuction(CustomerOrder order, TransporterOrderAuction auction) {
-        this.transporterAuctions.put(order, auction);
+    public void startTransporterAuction(TransportCommand transportCommand, TransporterCommandAuction auction) {
+        this.transporterAuctions.put(transportCommand, auction);
+    }
+
+    public void finishTransporterAuction(CustomerOrder order) {
+        this.transporterAuctions.remove(order);
     }
 }

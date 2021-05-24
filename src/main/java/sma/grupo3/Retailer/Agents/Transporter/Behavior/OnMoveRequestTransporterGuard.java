@@ -14,12 +14,14 @@ import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
 import sma.grupo3.Retailer.SharedDomain.StandardMalfunction;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
+import sma.grupo3.Retailer.SharedDomain.TransportCommandType;
 import sma.grupo3.Retailer.Utils.Configuration;
 import sma.grupo3.Retailer.Utils.ConsoleRainbow;
 import sma.grupo3.Retailer.Utils.ProbabilityModule;
 import sma.grupo3.Retailer.Utils.Randomizer;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
@@ -56,13 +58,23 @@ public class OnMoveRequestTransporterGuard extends GuardBESA {
         TransporterAgent agent = (TransporterAgent) this.getAgent();
         AdmBESA admBESA = agent.getAdmLocal();
         try {
+            Set<TransportCommand> waitingForTransfer = state.getCommandList().stream().filter(transportCommand -> {
+                if(transportCommand.getCommandType() == TransportCommandType.TRANSFER){
+                    return state.getCurrentLoad().contains(transportCommand.getOrder());
+                }
+                return false;
+            }).collect(Collectors.toSet());
+            if (!waitingForTransfer.isEmpty()) {
+                awaitMovement(state, admBESA);
+                return;
+            }
             if (state.getCurrentLocality() != movement.getLocalityArrived()) {
                 state.setCurrentLocality(movement.getLocalityArrived());
                 Services.bindToService(state.getCurrentLocality(), agent.getAid(), StandardServices.TRANSPORTER.value);
             }
             List<TransportCommand> commandList = state.getCommandList();
             for (TransportCommand command : commandList) {
-                if (command.isDelivery()) {
+                if (command.getCommandType() == TransportCommandType.DELIVERY) {
                     command.getOrder().addElapsedTime(movement.getMovementTimeCost(), true);
                 } else {
                     command.getOrder().addElapsedTime(movement.getMovementTimeCost());
@@ -130,16 +142,19 @@ public class OnMoveRequestTransporterGuard extends GuardBESA {
 
     private void malfunctionInMovement(TransporterState state, AdmBESA admBESA) throws ExceptionBESA {
         StandardMalfunction malfunction = Randomizer.randomEnum(StandardMalfunction.class);
-        if (cooperativeBehavior && false) {
-            //TODO: Implementar comportamiento cooperativo en caso de que haya un malfuncionamiento en el camion
-        } else {
-            ConsoleRainbow.fail(String.format("[%s]: Entrando en reparacion por %d ms", this.getAgent().getAlias(), malfunction.time));
-            state.scheduleMovement(
-                    new MovementStep(
-                            new TransporterMovement(state.getCurrentLocality(), malfunction.time),
-                            admBESA.getHandlerByAid(this.getAgent().getAid())),
-                    malfunction.time
-            );
+        ConsoleRainbow.fail(String.format("[%s]: Entrando en reparacion por %d ms", this.getAgent().getAlias(), malfunction.time));
+        if (cooperativeBehavior) {
+            Set<TransportCommand> commandToTransfer = state.getCommandList().stream().filter(transportCommand -> transportCommand.getCommandType() == TransportCommandType.DELIVERY).collect(Collectors.toSet());
+            for (TransportCommand transportCommand : commandToTransfer) {
+                transportCommand.prepareToTransfer();
+                ((TransporterAgent) getAgent()).startTransporterAuction(transportCommand);
+            }
         }
+        state.scheduleMovement(
+                new MovementStep(
+                        new TransporterMovement(state.getCurrentLocality(), malfunction.time),
+                        admBESA.getHandlerByAid(this.getAgent().getAid())),
+                malfunction.time
+        );
     }
 }

@@ -3,6 +3,7 @@ package sma.grupo3.Retailer.DistributedBehavior;
 import sma.grupo3.Retailer.Agents.Controller.ControllerAgent;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Services {
     private static ControllerAgent agent;
@@ -57,6 +58,28 @@ public class Services {
         List<String> localDirectory = new ArrayList<>(globalDirectory.get(service));
         Collections.shuffle(localDirectory);
         return localDirectory;
+    }
+
+    public static List<String> getNearbyServiceProviders(Localities locality, String service, int max) {
+        List<String> nearbyProviders = new ArrayList<>();
+        Set<Localities> visitedLocalities = new HashSet<>();
+        Set<Localities> lookupLocalities = new HashSet<Localities>() {{
+            add(locality);
+        }};
+        while (visitedLocalities.size() < directory.keySet().size()) {
+            for (Localities visitedLocality : lookupLocalities) {
+                for (String provider : directory.get(visitedLocality).get(service)) {
+                    nearbyProviders.add(provider);
+                    if (nearbyProviders.size() == max) {
+                        return nearbyProviders;
+                    }
+                }
+                visitedLocalities.add(visitedLocality);
+                lookupLocalities.addAll(ConnectionMap.getNeighbours(visitedLocality).stream().filter(localities -> localities.enable).collect(Collectors.toSet()));
+            }
+            lookupLocalities.removeAll(visitedLocalities);
+        }
+        return nearbyProviders;
     }
 
     public static void setAgent(ControllerAgent _agent) {

@@ -8,15 +8,14 @@ import BESA.Kernel.Agent.StateBESA;
 import BESA.Kernel.Agent.StructBESA;
 import BESA.Kernel.System.Directory.AgHandlerBESA;
 import sma.grupo3.Retailer.Agents.Transporter.Behavior.OnMoveRequestTransporterGuard;
-import sma.grupo3.Retailer.Agents.Transporter.Behavior.OnTransporterOrderAuctionTransporterGuard;
+import sma.grupo3.Retailer.Agents.Transporter.Behavior.OnTransporterCommandAuctionTransporterGuard;
+import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterCommandAuction;
+import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterCommandAuctionResponse;
 import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterMovement;
-import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterOrderAuctionResponse;
-import sma.grupo3.Retailer.Agents.Warehouse.Data.TransporterOrderAuction;
 import sma.grupo3.Retailer.Agents.Warehouse.Exceptions.NoTransporterAvailable;
-import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
-import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
+import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 
 import java.util.HashSet;
 import java.util.List;
@@ -46,20 +45,14 @@ public class TransporterAgent extends AgentBESA {
 
     }
 
-    public void startTransporterAuction(CustomerOrder order) throws NoTransporterAvailable, ExceptionBESA {
+    public void startTransporterAuction(TransportCommand transportCommand) throws NoTransporterAvailable, ExceptionBESA {
         TransporterState state = (TransporterState) getState();
-        List<String> availableTransport = Services.getLocalityServiceProviders(state.getCurrentLocality(), StandardServices.TRANSPORTER.value);
-        if (availableTransport.isEmpty()) {
-            availableTransport = Services.getGlobalServiceProviders(StandardServices.TRANSPORTER.value);
-        }
-        if (availableTransport.isEmpty()) {
-            throw new NoTransporterAvailable();
-        }
-        state.startTransporterAuction(order, new TransporterOrderAuction(new HashSet<>(availableTransport)));
+        List<String> availableTransport = Services.getNearbyServiceProviders(state.getCurrentLocality(), StandardServices.TRANSPORTER.value, 5);
+        state.startTransporterAuction(transportCommand, new TransporterCommandAuction(new HashSet<>(availableTransport)));
         for (String transporter : availableTransport) {
             AgHandlerBESA transporterHandler = getAdmLocal().getHandlerByAid(transporter);
-            TransporterOrderAuctionResponse response = new TransporterOrderAuctionResponse(getAid(), order, transporter);
-            EventBESA auctionEvent = new EventBESA(OnTransporterOrderAuctionTransporterGuard.class.getName(), response);
+            TransporterCommandAuctionResponse response = new TransporterCommandAuctionResponse(getAid(), StandardServices.TRANSPORTER, transportCommand, transporter);
+            EventBESA auctionEvent = new EventBESA(OnTransporterCommandAuctionTransporterGuard.class.getName(), response);
             transporterHandler.sendEvent(auctionEvent);
         }
     }

@@ -8,6 +8,7 @@ import java.util.Timer;
 public class CustomerState extends StateBESA {
     CustomerOrder activeOrder;
     Timer cancellationTimer;
+    double predictedTime;
 
     public CustomerState() {
     }
@@ -26,5 +27,13 @@ public class CustomerState extends StateBESA {
 
     public void setCancellationTimer(Timer cancellationTimer) {
         this.cancellationTimer = cancellationTimer;
+    }
+
+    public double getPredictedTime() {
+        return predictedTime;
+    }
+
+    public void setPredictedTime(double predictedTime) {
+        this.predictedTime = predictedTime;
     }
 }

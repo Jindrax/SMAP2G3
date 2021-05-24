@@ -1,21 +1,23 @@
 package sma.grupo3.Retailer.Agents.Transporter.Data;
 
 import BESA.Kernel.Agent.Event.DataBESA;
-import org.jetbrains.annotations.NotNull;
+import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 
 import java.util.Objects;
 
 
-public class TransporterOrderAuctionResponse extends DataBESA implements Comparable {
+public class TransporterOrderAuctionResponse extends DataBESA {
     private final String auctioneer;
+    private final StandardServices auctioneerService;
     private final CustomerOrder order;
     private final String bidder;
     private boolean fulfillable;
     private double bid;
 
-    public TransporterOrderAuctionResponse(String auctioneer, CustomerOrder order, String bidder) {
+    public TransporterOrderAuctionResponse(String auctioneer, StandardServices auctioneerService, CustomerOrder order, String bidder) {
         this.auctioneer = auctioneer;
+        this.auctioneerService = auctioneerService;
         this.order = order;
         this.bidder = bidder;
     }
@@ -36,21 +38,6 @@ public class TransporterOrderAuctionResponse extends DataBESA implements Compara
         return bid;
     }
 
-    @Override
-    public int compareTo(@NotNull Object o) {
-        TransporterOrderAuctionResponse response = (TransporterOrderAuctionResponse) o;
-        if (this.fulfillable && response.fulfillable) {
-            return Double.compare(this.bid, response.bid);
-        } else {
-            if (this.fulfillable) {
-                return -1;
-            } else if (response.fulfillable) {
-                return 1;
-            }
-        }
-        return 1;
-    }
-
     public void setFulfillable(boolean fulfillable) {
         this.fulfillable = fulfillable;
     }
@@ -61,6 +48,10 @@ public class TransporterOrderAuctionResponse extends DataBESA implements Compara
 
     public String getAuctioneer() {
         return auctioneer;
+    }
+
+    public StandardServices getAuctioneerService() {
+        return auctioneerService;
     }
 
     @Override

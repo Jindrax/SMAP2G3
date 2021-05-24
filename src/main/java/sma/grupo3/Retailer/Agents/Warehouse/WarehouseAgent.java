@@ -49,7 +49,7 @@ public class WarehouseAgent extends AgentBESA {
         state.stockCredit(order);
         for (String transporter : availableTransport) {
             AgHandlerBESA transporterHandler = getAdmLocal().getHandlerByAid(transporter);
-            TransporterOrderAuctionResponse response = new TransporterOrderAuctionResponse(getAid(), order, transporter);
+            TransporterOrderAuctionResponse response = new TransporterOrderAuctionResponse(getAid(), StandardServices.WAREHOUSE, order, transporter);
             EventBESA auctionEvent = new EventBESA(OnTransporterOrderAuctionTransporterGuard.class.getName(), response);
             transporterHandler.sendEvent(auctionEvent);
         }

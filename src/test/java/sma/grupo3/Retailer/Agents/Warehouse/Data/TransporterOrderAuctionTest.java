@@ -2,7 +2,7 @@ package sma.grupo3.Retailer.Agents.Warehouse.Data;
 
 import org.junit.jupiter.api.Test;
 import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterOrderAuctionResponse;
-import sma.grupo3.Retailer.Utils.Randomizer;
+import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,8 +24,8 @@ class TransporterOrderAuctionTest {
         System.out.println(auction.getAuctionWinner());
     }
 
-    TransporterOrderAuctionResponse generateResponse(String bidder, boolean fulfill, double bid){
-        TransporterOrderAuctionResponse response =  new TransporterOrderAuctionResponse("SDFGDFHH", null, bidder);
+    TransporterOrderAuctionResponse generateResponse(String bidder, boolean fulfill, double bid) {
+        TransporterOrderAuctionResponse response = new TransporterOrderAuctionResponse("SDFGDFHH", StandardServices.WAREHOUSE, null, bidder);
         response.setFulfillable(fulfill);
         response.setBid(bid);
         return response;
