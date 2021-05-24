@@ -1,13 +1,11 @@
 package sma.grupo3.Retailer.DistributedBehavior;
 
-import BESA.ExceptionBESA;
 import BESA.Kernel.System.AdmBESA;
 import sma.grupo3.Retailer.Agents.Controller.ControllerAgent;
 import sma.grupo3.Retailer.Agents.Controller.ControllerState;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -24,8 +22,8 @@ public class ContainerDeployer {
             admBESA.registerAgent(controllerAgent, locality.value, locality.value);
             controllerAgent.start();
             controllerAgent.checkReady();
-            controllerAgent.deployWarehouse();
-            controllerAgent.deployFleet();
+            controllerAgent.deployWarehouse(locality);
+            controllerAgent.deployFleet(locality);
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException ex) {

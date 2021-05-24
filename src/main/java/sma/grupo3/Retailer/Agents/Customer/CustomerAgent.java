@@ -49,7 +49,7 @@ public class CustomerAgent extends AgentBESA {
     }
 
     public double rateOrder(long deliveryTime, double predictedTime) {
-        double score = 10 + (10 * ((predictedTime - (deliveryTime / 10.0)) / predictedTime));
+        double score = 10 + (10 * ((predictedTime - (deliveryTime)) / predictedTime));
         if (score > 10) {
             return 10;
         }

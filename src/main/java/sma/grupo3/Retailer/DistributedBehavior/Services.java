@@ -6,41 +6,32 @@ import java.util.*;
 
 public class Services {
     private static ControllerAgent agent;
-    private static Localities thisLocality;
     private static final Map<String, Set<String>> globalDirectory = new Hashtable<>();
     private static final Map<Localities, Map<String, Set<String>>> directory = new Hashtable<Localities, Map<String, Set<String>>>();
 
-    public static Localities getThisLocality() {
-        return thisLocality;
-    }
-
-    public static void setThisLocality(Localities thisLocality) {
-        Services.thisLocality = thisLocality;
-    }
-
-    public static void bindToService(String id, String service) {
+    public static void bindToService(Localities locality, String id, String service) {
         Set<String> gDirectory = globalDirectory.computeIfAbsent(service, s -> Collections.synchronizedSet(new HashSet<>()));
         gDirectory.add(id);
-        Set<String> localityDirectory = directory.computeIfAbsent(thisLocality, localities -> new Hashtable<>()).computeIfAbsent(service, s -> Collections.synchronizedSet(new HashSet<String>()));
+        Set<String> localityDirectory = directory.computeIfAbsent(locality, localities -> new Hashtable<>()).computeIfAbsent(service, s -> Collections.synchronizedSet(new HashSet<String>()));
         localityDirectory.add(id);
         agent.notifyServiceUpdate(service, localityDirectory);
     }
 
-    public static void bindBatchToService(Set<String> ids, String service) {
+    public static void bindBatchToService(Localities locality, Set<String> ids, String service) {
         Set<String> gDirectory = globalDirectory.computeIfAbsent(service, s -> Collections.synchronizedSet(new HashSet<>()));
         gDirectory.addAll(ids);
-        Set<String> localityDirectory = directory.computeIfAbsent(thisLocality, localities -> new Hashtable<>()).computeIfAbsent(service, s -> Collections.synchronizedSet(new HashSet<String>()));
+        Set<String> localityDirectory = directory.computeIfAbsent(locality, localities -> new Hashtable<>()).computeIfAbsent(service, s -> Collections.synchronizedSet(new HashSet<String>()));
         localityDirectory.addAll(ids);
         agent.notifyServiceUpdate(service, localityDirectory);
     }
 
-    public static boolean unbindFromService(String id, String service) {
+    public static boolean unbindFromService(Localities locality, String id, String service) {
         if (globalDirectory.containsKey(service)) {
             globalDirectory.get(service).remove(id);
-            if (directory.containsKey(thisLocality)) {
-                if (directory.get(thisLocality).containsKey(service)) {
-                    directory.get(thisLocality).get(service).remove(id);
-                    agent.notifyServiceUpdate(service, directory.get(thisLocality).get(service));
+            if (directory.containsKey(locality)) {
+                if (directory.get(locality).containsKey(service)) {
+                    directory.get(locality).get(service).remove(id);
+                    agent.notifyServiceUpdate(service, directory.get(locality).get(service));
                     return true;
                 }
             }

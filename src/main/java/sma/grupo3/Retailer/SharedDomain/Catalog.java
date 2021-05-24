@@ -14,4 +14,6 @@ public enum Catalog {
         this.name = name;
         this.weight = weight;
     }
+
+
 }

@@ -1,3 +1,0 @@
-sma/grupo3/Retailer/DistributedBehavior/ConnectionMapTest.java
- sma.grupo3.Retailer.DistributedBehavior.ConnectionMapTest
- sma.grupo3.Retailer.DistributedBehavior.ConnectionMapTest$1

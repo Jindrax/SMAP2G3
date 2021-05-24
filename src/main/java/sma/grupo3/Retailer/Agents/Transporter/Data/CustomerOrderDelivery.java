@@ -31,7 +31,15 @@ public class CustomerOrderDelivery extends DataBESA {
         return order;
     }
 
-    public void delivered(){
+    public void delivered() {
         this.deliveredStamp = System.currentTimeMillis();
+    }
+
+    public void addDeliveryElapsedTime(long elapsedTime) {
+        this.order.addElapsedTime(elapsedTime, true);
+    }
+
+    public void addElapsedTime(long elapsedTime) {
+        this.order.addElapsedTime(elapsedTime);
     }
 }

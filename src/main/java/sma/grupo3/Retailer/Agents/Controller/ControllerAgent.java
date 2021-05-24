@@ -16,6 +16,7 @@ import sma.grupo3.Retailer.Agents.Transporter.TransporterAgent;
 import sma.grupo3.Retailer.Agents.Transporter.TransporterState;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
+import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
@@ -33,7 +34,6 @@ public class ControllerAgent extends AgentBESA {
     @Override
     public void setupAgent() {
         ControllerState state = (ControllerState) this.getState();
-        Services.setThisLocality(state.getLocality());
         Services.setAgent(this);
     }
 
@@ -59,7 +59,7 @@ public class ControllerAgent extends AgentBESA {
                     ah = this.getAdmLocal().getHandlerByAlias(locality);
                     EventBESA msj = new EventBESA(
                             OnEchoFromContainerControllerGuard.class.getName(),
-                            new EchoFromContainer(Services.getThisLocality())
+                            new EchoFromContainer(state.getLocality())
                     );
                     ah.sendEvent(msj);
                 }
@@ -71,42 +71,42 @@ public class ControllerAgent extends AgentBESA {
         ReportBESA.info("Successful Check");
     }
 
-    public void deployWarehouse() {
-        if (Services.getThisLocality().isThereWarehouse) {
+    public void deployWarehouse(Localities locality) {
+        if (locality.isThereWarehouse) {
             ControllerState state = (ControllerState) this.getState();
             WarehouseAgent warehouse = AgentFactory.agentInstance(WarehouseAgent.class,
-                    Services.getThisLocality().value + "_" + StandardServices.WAREHOUSE,
+                    locality.value + "_" + StandardServices.WAREHOUSE,
                     0.5,
-                    new WarehouseState());
+                    new WarehouseState(locality));
             if (warehouse != null) {
                 warehouse.start();
                 state.setWarehouse(warehouse);
-                Services.bindToService(warehouse.getAid(), StandardServices.WAREHOUSE.value);
+                Services.bindToService(locality, warehouse.getAid(), StandardServices.WAREHOUSE.value);
             }
         }
     }
 
-    public void deployFleet() {
+    public void deployFleet(Localities locality) {
         ControllerState state = (ControllerState) this.getState();
         Set<String> batchIds = new HashSet<>();
-        for (int i = 0; i < Services.getThisLocality().fleetSize; i++) {
+        for (int i = 0; i < locality.fleetSize; i++) {
             TransporterAgent transporterAgent = AgentFactory.agentInstance(TransporterAgent.class,
-                    Services.getThisLocality().value + "_" + StandardServices.TRANSPORTER + "_" + i,
+                    locality.value + "_" + StandardServices.TRANSPORTER + "_" + i,
                     0.6,
-                    new TransporterState(Services.getThisLocality()));
+                    new TransporterState(locality));
             if (transporterAgent != null) {
                 transporterAgent.start();
                 state.addTransporterToFleet(transporterAgent);
                 batchIds.add(transporterAgent.getAid());
             }
         }
-        Services.bindBatchToService(batchIds, StandardServices.TRANSPORTER.value);
-        Services.bindBatchToService(batchIds, Services.getThisLocality().value + StandardServices.TRANSPORTER.value);
+        Services.bindBatchToService(locality, batchIds, StandardServices.TRANSPORTER.value);
+        Services.bindBatchToService(locality, batchIds, locality.value + StandardServices.TRANSPORTER.value);
     }
 
     public void notifyServiceUpdate(String service, Set<String> update) {
         ControllerState state = (ControllerState) this.getState();
-        EventBESA eventBESA = new EventBESA(OnServiceUpdatedControllerGuard.class.getName(), new ServiceUpdateFromLocality(Services.getThisLocality(), service, update));
+        EventBESA eventBESA = new EventBESA(OnServiceUpdatedControllerGuard.class.getName(), new ServiceUpdateFromLocality(state.getLocality(), service, update));
         for (String aliasLocality : state.getKnownLocalities()) {
             try {
                 this.getAdmLocal().getHandlerByAlias(aliasLocality).sendEvent(eventBESA);

@@ -1,11 +1,11 @@
 package sma.grupo3.Retailer.DistributedBehavior;
 
 public enum Localities {
-    CHAPINERO("CHAPINERO", true, 15, true),
+    CHAPINERO("CHAPINERO", true, 6, true),
     BARRIOSUNIDOS("BARRIOSUNIDOS", false, 0, false),
     TEUSAQUILLO("TEUSAQUILLO", true, 4, false),
-    USAQUEN("USAQUEN", true, 0, true),
-    SUBA("SUBA", false, 10, false),
+    USAQUEN("USAQUEN", true, 4, true),
+    SUBA("SUBA", false, 5, false),
     ENGATIVA("ENGATIVA", true, 5, false);
 
     public final String value;

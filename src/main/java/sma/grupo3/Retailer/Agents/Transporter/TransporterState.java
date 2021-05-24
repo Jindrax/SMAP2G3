@@ -5,6 +5,7 @@ import BESA.Kernel.Agent.StateBESA;
 import sma.grupo3.Retailer.Agents.Customer.Behavior.OnOrderDeliveredCustomerGuard;
 import sma.grupo3.Retailer.Agents.Customer.Behavior.OnTransporterResponseCustomerGuard;
 import sma.grupo3.Retailer.Agents.Transporter.Data.CustomerOrderDelivery;
+import sma.grupo3.Retailer.Agents.Warehouse.Data.TransporterOrderAuction;
 import sma.grupo3.Retailer.DistributedBehavior.ConnectionMap;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
@@ -13,16 +14,22 @@ import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 import java.util.*;
 
 public class TransporterState extends StateBESA {
+    private Localities baseLocality;
     private Localities currentLocality;
     private final Set<CustomerOrder> currentLoad;
     private final List<TransportCommand> commandList;
     private final Timer currentMovement;
+    private final double maxWeightCapacity;
+    Map<CustomerOrder, TransporterOrderAuction> transporterAuctions;
 
     public TransporterState(Localities currentLocality) {
+        this.baseLocality = currentLocality;
         this.currentLocality = currentLocality;
         this.currentLoad = new HashSet<>();
         this.commandList = new ArrayList<>();
         this.currentMovement = new Timer();
+        this.maxWeightCapacity = 30000;
+        this.transporterAuctions = new Hashtable<>();
     }
 
     public List<TransportCommand> getCommandList() {
@@ -71,5 +78,25 @@ public class TransporterState extends StateBESA {
 
     public void scheduleMovement(TimerTask movementTask, long start) {
         this.currentMovement.schedule(movementTask, start);
+    }
+
+    public Localities getBaseLocality() {
+        return baseLocality;
+    }
+
+    public Set<CustomerOrder> getCurrentLoad() {
+        return currentLoad;
+    }
+
+    public double getMaxWeightCapacity() {
+        return maxWeightCapacity;
+    }
+
+    public Map<CustomerOrder, TransporterOrderAuction> getTransporterAuctions() {
+        return transporterAuctions;
+    }
+
+    public void startTransporterAuction(CustomerOrder order, TransporterOrderAuction auction) {
+        this.transporterAuctions.put(order, auction);
     }
 }

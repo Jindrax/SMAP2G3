@@ -1,6 +1,7 @@
 package sma.grupo3.Retailer.SharedDomain;
 
 import sma.grupo3.Retailer.Utils.Configuration;
+import sma.grupo3.Retailer.Utils.ConsoleRainbow;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +25,6 @@ public class Statistics {
         if (!customerRatings.isEmpty()) {
             averageRating = customerRatings.stream().mapToDouble(CustomerRating::getCustomerSatisfaction).reduce(Double::sum).orElse(0.0) / customerRatings.size();
         }
-        System.out.println("El promedio de satisfaccion del cliente para esta simulacion fue de: " + averageRating);
+        ConsoleRainbow.success("El promedio de satisfaccion del cliente para esta simulacion fue de: " + averageRating);
     }
 }

@@ -5,6 +5,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class Configuration {
     private static final Dotenv dotenv = Dotenv.configure().directory("src/main/resources/.env").load();
 
+    public static double timeFactor = Double.parseDouble(dotenv.get("TIME_SCALE_FACTOR"));
+
     public static int getInt(String key) {
         return Integer.parseInt(dotenv.get(key));
     }
@@ -18,7 +20,7 @@ public class Configuration {
     }
 
     public static boolean getBoolean(String key) {
-        return Boolean.getBoolean(dotenv.get(key));
+        return Boolean.parseBoolean(dotenv.get(key));
     }
 
     public static String get(String key) {
