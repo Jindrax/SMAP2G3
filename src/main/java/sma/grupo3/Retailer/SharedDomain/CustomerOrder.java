@@ -59,7 +59,7 @@ public class CustomerOrder extends DataBESA {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomerOrder that = (CustomerOrder) o;
-        return orderQuantity == that.orderQuantity && createdAt == that.createdAt && customerLocality == that.customerLocality && customerAlias.equals(that.customerAlias) && orderProduct == that.orderProduct && orderState == that.orderState;
+        return orderQuantity == that.orderQuantity && createdAt == that.createdAt && customerLocality == that.customerLocality && customerAlias.equals(that.customerAlias) && orderProduct == that.orderProduct;
     }
 
     @Override
@@ -86,5 +86,14 @@ public class CustomerOrder extends DataBESA {
         } else {
             this.totalElapsedTime += time;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CustomerOrder{" +
+                "customerAlias='" + customerAlias + '\'' +
+                ", orderProduct=" + orderProduct +
+                ", orderQuantity=" + orderQuantity +
+                '}';
     }
 }

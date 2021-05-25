@@ -19,14 +19,18 @@ import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
+import sma.grupo3.Retailer.SharedDomain.Catalog;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
+import sma.grupo3.Retailer.Utils.GUI.LocalityDashboard;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ControllerAgent extends AgentBESA {
+
     public ControllerAgent(String alias, StateBESA state, StructBESA structAgent, double passwd) throws KernelAgentExceptionBESA {
         super(alias, state, structAgent, passwd);
     }
@@ -77,7 +81,22 @@ public class ControllerAgent extends AgentBESA {
             WarehouseAgent warehouse = AgentFactory.agentInstance(WarehouseAgent.class,
                     locality.value + "_" + StandardServices.WAREHOUSE,
                     0.5,
-                    new WarehouseState(locality));
+                    new WarehouseState(locality, ((ControllerState) getState()).getDashboard()));
+            if (warehouse != null) {
+                warehouse.start();
+                state.setWarehouse(warehouse);
+                Services.bindToService(locality, warehouse.getAid(), StandardServices.WAREHOUSE.value);
+            }
+        }
+    }
+
+    public void deployWarehouse(Localities locality, Map<Catalog, Integer> stock) {
+        if (locality.isThereWarehouse) {
+            ControllerState state = (ControllerState) this.getState();
+            WarehouseAgent warehouse = AgentFactory.agentInstance(WarehouseAgent.class,
+                    locality.value + "_" + StandardServices.WAREHOUSE,
+                    0.5,
+                    new WarehouseState(locality, ((ControllerState) getState()).getDashboard(), stock));
             if (warehouse != null) {
                 warehouse.start();
                 state.setWarehouse(warehouse);
@@ -88,14 +107,16 @@ public class ControllerAgent extends AgentBESA {
 
     public void deployFleet(Localities locality) {
         ControllerState state = (ControllerState) this.getState();
+        LocalityDashboard dashboard = ((ControllerState) getState()).getDashboard();
         Set<String> batchIds = new HashSet<>();
         for (int i = 0; i < locality.fleetSize; i++) {
             TransporterAgent transporterAgent = AgentFactory.agentInstance(TransporterAgent.class,
                     locality.value + "_" + StandardServices.TRANSPORTER + "_" + i,
                     0.6,
-                    new TransporterState(locality));
+                    new TransporterState(locality, dashboard));
             if (transporterAgent != null) {
                 transporterAgent.start();
+                dashboard.addToFleet(transporterAgent.getAlias(), locality);
                 state.addTransporterToFleet(transporterAgent);
                 batchIds.add(transporterAgent.getAid());
             }

@@ -5,12 +5,15 @@ import BESA.Kernel.Agent.GuardBESA;
 import sma.grupo3.Retailer.Agents.Transporter.TransporterState;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 
+import java.util.List;
+
 public class OnOrderTransferredTransporterGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {
         TransportCommand transportCommand = (TransportCommand) eventBESA.getData();
         TransporterState state = (TransporterState) getAgent().getState();
+        List<TransportCommand> commandList = state.getCommandList();
         state.getCurrentLoad().remove(transportCommand.getOrder());
-        state.getCommandList().remove(transportCommand);
+        commandList.remove(transportCommand);
     }
 }

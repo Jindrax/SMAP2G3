@@ -10,9 +10,14 @@ import java.util.List;
 public class Statistics {
     private static final List<CustomerRating> customerRatings = Collections.synchronizedList(new ArrayList<CustomerRating>());
     private static int customersRegistered = 0;
-    private static final int maxCustomers = Configuration.getInt("MAX_CUSTOMERS");
+    private static int maxCustomers = 0;
+
+    public static void setMaxCustomers(int maxCustomers) {
+        Statistics.maxCustomers = maxCustomers;
+    }
 
     public static void registerFinalizedOrder(CustomerRating rating) {
+        System.out.println();
         customerRatings.add(rating);
         customersRegistered++;
         if (customersRegistered == maxCustomers) {

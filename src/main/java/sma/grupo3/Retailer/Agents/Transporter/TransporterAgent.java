@@ -49,11 +49,15 @@ public class TransporterAgent extends AgentBESA {
         TransporterState state = (TransporterState) getState();
         List<String> availableTransport = Services.getNearbyServiceProviders(state.getCurrentLocality(), StandardServices.TRANSPORTER.value, 5);
         state.startTransporterAuction(transportCommand, new TransporterCommandAuction(new HashSet<>(availableTransport)));
-        for (String transporter : availableTransport) {
-            AgHandlerBESA transporterHandler = getAdmLocal().getHandlerByAid(transporter);
-            TransporterCommandAuctionResponse response = new TransporterCommandAuctionResponse(getAid(), StandardServices.TRANSPORTER, transportCommand, transporter);
-            EventBESA auctionEvent = new EventBESA(OnTransporterCommandAuctionTransporterGuard.class.getName(), response);
-            transporterHandler.sendEvent(auctionEvent);
+        if (availableTransport.isEmpty()) {
+            transportCommand.cancelTransfer();
+        } else {
+            for (String transporter : availableTransport) {
+                AgHandlerBESA transporterHandler = getAdmLocal().getHandlerByAid(transporter);
+                TransporterCommandAuctionResponse response = new TransporterCommandAuctionResponse(getAid(), StandardServices.TRANSPORTER, transportCommand, transporter);
+                EventBESA auctionEvent = new EventBESA(OnTransporterCommandAuctionTransporterGuard.class.getName(), response);
+                transporterHandler.sendEvent(auctionEvent);
+            }
         }
     }
 }

@@ -10,12 +10,14 @@ public class TransportCommand extends DataBESA {
     CustomerOrder order;
     TransportCommandType commandType;
     boolean fulfilled;
+    String originalOwner;
 
     public TransportCommand(Localities destination, CustomerOrder order, TransportCommandType commandType) {
         this.destination = destination;
         this.order = order;
         this.commandType = commandType;
         this.fulfilled = false;
+        this.originalOwner = "";
     }
 
     public Localities getDestination() {
@@ -38,12 +40,15 @@ public class TransportCommand extends DataBESA {
         return fulfilled;
     }
 
-    public void prepareToTransfer() {
+    public void prepareToTransfer(Localities transferDestination, String originalOwner) {
         this.commandType = TransportCommandType.TRANSFER;
+        this.destination = transferDestination;
+        this.originalOwner = originalOwner;
     }
 
     public void cancelTransfer() {
         this.commandType = TransportCommandType.DELIVERY;
+        this.destination = order.getCustomerLocality();
     }
 
     @Override
@@ -51,11 +56,25 @@ public class TransportCommand extends DataBESA {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TransportCommand that = (TransportCommand) o;
-        return fulfilled == that.fulfilled && destination == that.destination && Objects.equals(order, that.order) && commandType == that.commandType;
+        return destination == that.destination && Objects.equals(order, that.order) && commandType == that.commandType;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(destination, order, commandType, fulfilled);
+    }
+
+    @Override
+    public String toString() {
+        return "TransportCommand{" +
+                "destination=" + destination +
+                ", order=" + order +
+                ", commandType=" + commandType +
+                ", fulfilled=" + fulfilled +
+                '}';
+    }
+
+    public String getOriginalOwner() {
+        return originalOwner;
     }
 }

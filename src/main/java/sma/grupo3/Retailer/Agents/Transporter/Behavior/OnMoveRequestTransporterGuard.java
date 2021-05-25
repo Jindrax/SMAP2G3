@@ -15,6 +15,7 @@ import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
 import sma.grupo3.Retailer.SharedDomain.StandardMalfunction;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 import sma.grupo3.Retailer.SharedDomain.TransportCommandType;
+import sma.grupo3.Retailer.SharedDomain.TransporterStateEnum;
 import sma.grupo3.Retailer.Utils.Configuration;
 import sma.grupo3.Retailer.Utils.ConsoleRainbow;
 import sma.grupo3.Retailer.Utils.ProbabilityModule;
@@ -59,32 +60,46 @@ public class OnMoveRequestTransporterGuard extends GuardBESA {
         AdmBESA admBESA = agent.getAdmLocal();
         try {
             Set<TransportCommand> waitingForTransfer = state.getCommandList().stream().filter(transportCommand -> {
-                if(transportCommand.getCommandType() == TransportCommandType.TRANSFER){
+                if (transportCommand.getCommandType() == TransportCommandType.TRANSFER) {
                     return state.getCurrentLoad().contains(transportCommand.getOrder());
                 }
                 return false;
             }).collect(Collectors.toSet());
             if (!waitingForTransfer.isEmpty()) {
+//                System.out.println(waitingForTransfer);
+                state.getDashboard().updateFleetMemberState(getAgent().getAlias(), TransporterStateEnum.WAITING);
                 awaitMovement(state, admBESA);
                 return;
             }
             if (state.getCurrentLocality() != movement.getLocalityArrived()) {
                 state.setCurrentLocality(movement.getLocalityArrived());
+                state.getDashboard().updateFleetMemberLocality(getAgent().getAlias(), state.getCurrentLocality());
                 Services.bindToService(state.getCurrentLocality(), agent.getAid(), StandardServices.TRANSPORTER.value);
             }
+            state.getDashboard().updateFleetMemberState(getAgent().getAlias(), TransporterStateEnum.OPERATIONAL);
             List<TransportCommand> commandList = state.getCommandList();
             for (TransportCommand command : commandList) {
-                if (command.getCommandType() == TransportCommandType.DELIVERY) {
-                    command.getOrder().addElapsedTime(movement.getMovementTimeCost(), true);
-                } else {
-                    command.getOrder().addElapsedTime(movement.getMovementTimeCost());
+                switch (command.getCommandType()) {
+                    case DELIVERY:
+                    case TRANSFER:
+                        command.getOrder().addElapsedTime(movement.getMovementTimeCost(), true);
+                    default:
+                        command.getOrder().addElapsedTime(movement.getMovementTimeCost());
                 }
             }
             for (TransportCommand command : commandList.stream()
                     .filter(command -> command.getDestination() == state.getCurrentLocality()).collect(Collectors.toList())) {
                 EventBESA customerNotification = state.executeCommand(command);
                 if (customerNotification != null) {
-                    admBESA.getHandlerByAlias(command.getOrder().getCustomerAlias()).sendEvent(customerNotification);
+                    switch (command.getCommandType()) {
+                        case PICKUP:
+                        case DELIVERY:
+                            admBESA.getHandlerByAlias(command.getOrder().getCustomerAlias()).sendEvent(customerNotification);
+                            break;
+                        case TRANSFER:
+                            admBESA.getHandlerByAid(command.getOriginalOwner()).sendEvent(customerNotification);
+                            break;
+                    }
                 }
             }
             commandList.removeAll(
@@ -142,11 +157,13 @@ public class OnMoveRequestTransporterGuard extends GuardBESA {
 
     private void malfunctionInMovement(TransporterState state, AdmBESA admBESA) throws ExceptionBESA {
         StandardMalfunction malfunction = Randomizer.randomEnum(StandardMalfunction.class);
+        state.getDashboard().updateFleetMemberState(getAgent().getAlias(), TransporterStateEnum.FIXING);
         ConsoleRainbow.fail(String.format("[%s]: Entrando en reparacion por %d ms", this.getAgent().getAlias(), malfunction.time));
         if (cooperativeBehavior) {
             Set<TransportCommand> commandToTransfer = state.getCommandList().stream().filter(transportCommand -> transportCommand.getCommandType() == TransportCommandType.DELIVERY).collect(Collectors.toSet());
             for (TransportCommand transportCommand : commandToTransfer) {
-                transportCommand.prepareToTransfer();
+                ConsoleRainbow.fail(String.format("[%s]: Buscando apoyo para el pedido de %s", this.getAgent().getAlias(), transportCommand.getOrder().getCustomerAlias()));
+                transportCommand.prepareToTransfer(state.getCurrentLocality(), getAgent().getAid());
                 ((TransporterAgent) getAgent()).startTransporterAuction(transportCommand);
             }
         }

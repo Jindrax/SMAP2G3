@@ -1,6 +1,8 @@
 package sma.grupo3.Retailer.SharedDomain;
 
-public enum Catalog {
+import java.io.Serializable;
+
+public enum Catalog implements Serializable {
     Product1("Product1", 600),
     Product2("Product2", 2000),
     Product3("Product3", 150),

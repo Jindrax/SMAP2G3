@@ -12,6 +12,7 @@ import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 import sma.grupo3.Retailer.SharedDomain.TransportCommandType;
+import sma.grupo3.Retailer.Utils.GUI.LocalityDashboard;
 
 import java.util.*;
 
@@ -23,8 +24,9 @@ public class TransporterState extends StateBESA {
     private final Timer currentMovement;
     private final double maxWeightCapacity;
     Map<TransportCommand, TransporterCommandAuction> transporterAuctions;
+    private final LocalityDashboard dashboard;
 
-    public TransporterState(Localities currentLocality) {
+    public TransporterState(Localities currentLocality, LocalityDashboard dashboard) {
         this.baseLocality = currentLocality;
         this.currentLocality = currentLocality;
         this.currentLoad = new HashSet<>();
@@ -32,6 +34,7 @@ public class TransporterState extends StateBESA {
         this.currentMovement = new Timer();
         this.maxWeightCapacity = 30000;
         this.transporterAuctions = new Hashtable<>();
+        this.dashboard = dashboard;
     }
 
     public List<TransportCommand> getCommandList() {
@@ -113,5 +116,16 @@ public class TransporterState extends StateBESA {
 
     public void finishTransporterAuction(CustomerOrder order) {
         this.transporterAuctions.remove(order);
+    }
+
+    public LocalityDashboard getDashboard() {
+        return dashboard;
+    }
+
+    public void removeTransferCommandOnOrder(CustomerOrder order) {
+        TransportCommand commandToBeRemoved = this.commandList.stream().filter(transportCommand -> transportCommand.getOrder() == order).findFirst().orElse(null);
+        if (commandToBeRemoved != null) {
+            this.commandList.remove(commandToBeRemoved);
+        }
     }
 }

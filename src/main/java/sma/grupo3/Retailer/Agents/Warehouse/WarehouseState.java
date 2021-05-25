@@ -7,13 +7,8 @@ import sma.grupo3.Retailer.Agents.Warehouse.Data.WarehouseOrderAuction;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.SharedDomain.Catalog;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
-import sma.grupo3.Retailer.Utils.GUI.CatalogCellRenderer;
-import sma.grupo3.Retailer.Utils.GUI.CatalogTableModel;
-import sma.grupo3.Retailer.Utils.Randomizer;
+import sma.grupo3.Retailer.Utils.GUI.LocalityDashboard;
 
-import javax.swing.*;
-import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,60 +19,30 @@ public class WarehouseState extends StateBESA {
     Map<String, CustomerOrderAuctionWrapper> auctions;
     Map<CustomerOrder, TransporterOrderAuction> transporterAuctions;
     Map<CustomerOrder, WarehouseOrderAuction> warehouseAuctions;
-    Map<Catalog, Integer> tableIndex;
-    CatalogTableModel tableModel;
+    LocalityDashboard dashboard;
 
-    public WarehouseState(Localities locality) {
+    public WarehouseState(Localities locality, LocalityDashboard dashboard, Map<Catalog, Integer> stock) {
         this.locality = locality;
-        this.stock = new Hashtable<Catalog, Integer>();
-        this.tableIndex = new Hashtable<>();
-        for (Catalog catalog : Catalog.values()) {
-            this.stock.put(catalog, Randomizer.randomInt(20, 50));
-        }
+        this.stock = stock;
         this.customerOrders = new ArrayList<>();
         this.auctions = new Hashtable<>();
         this.transporterAuctions = new Hashtable<>();
         this.warehouseAuctions = new Hashtable<>();
-        //1. Create the frame.
-        JFrame frame = new JFrame(locality.value);
-        //frame.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
+        this.dashboard = dashboard;
+        this.dashboard.addStock(Arrays.stream(Catalog.values()).sorted().collect(Collectors.toList()), this.stock);
 
-        //2. Optional: What happens when the frame closes?
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
-        //3. Create components and put them in the frame.
-        //...create emptyLabel...
-        frame.getContentPane().add(new JLabel(locality.value), BorderLayout.NORTH);
-        JTable table = new JTable(new CatalogTableModel());
-        table.setFont(new Font("Serif", Font.PLAIN, 20));
-        table.setRowHeight(table.getRowHeight() + 10);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        this.tableModel = (CatalogTableModel) table.getModel();
-        int i = 0;
-        this.tableModel.addColumn("Producto");
-        this.tableModel.addColumn("Inventario");
-        this.tableModel.addColumn("Variacion");
-        for (Catalog catalog : Arrays.stream(Catalog.values()).sorted().collect(Collectors.toList())) {
-            this.tableIndex.put(catalog, i);
-            Object[] row = new Object[3];
-            row[0] = catalog.name;
-            row[1] = this.stock.get(catalog);
-            row[2] = 0;
-            this.tableModel.addRow(row);
-            i++;
-        }
-        for (int j = 0; j < tableModel.getColumnCount(); j++) {
-            table.setDefaultRenderer(table.getColumnClass(j), new CatalogCellRenderer());
-        }
-        frame.getContentPane().add(table, BorderLayout.CENTER);
-        //4. Size the frame.
-        frame.pack();
+    public WarehouseState(Localities locality, LocalityDashboard dashboard) {
+        this.locality = locality;
+        this.stock = new Hashtable<>();
+        this.customerOrders = new ArrayList<>();
+        this.auctions = new Hashtable<>();
+        this.transporterAuctions = new Hashtable<>();
+        this.warehouseAuctions = new Hashtable<>();
+        this.dashboard = dashboard;
+        this.dashboard.addStock(Arrays.stream(Catalog.values()).sorted().collect(Collectors.toList()), this.stock);
 
-        frame.setMinimumSize(new Dimension(500, 250));
-        frame.setResizable(false);
-
-        //5. Show it.
-        frame.setVisible(true);
     }
 
     public Map<CustomerOrder, TransporterOrderAuction> getTransporterAuctions() {
@@ -120,10 +85,7 @@ public class WarehouseState extends StateBESA {
         int actualStock = this.stock.get(order.getOrderProduct());
         int creditedStock = actualStock - order.getOrderQuantity();
         this.stock.put(order.getOrderProduct(), creditedStock);
-        int index = this.tableIndex.get(order.getOrderProduct());
-        this.tableModel.setValueAt(creditedStock, index, 1);
-        this.tableModel.setValueAt("- " + order.getOrderQuantity(), index, 2);
-        this.tableModel.setFocusRow(index);
+        this.dashboard.creditStock(order.getOrderProduct(), creditedStock, order.getOrderQuantity());
     }
 
     public boolean evalOrderCapacity(CustomerOrder order) {
