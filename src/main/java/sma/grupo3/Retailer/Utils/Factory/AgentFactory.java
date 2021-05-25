@@ -2,23 +2,22 @@ package sma.grupo3.Retailer.Utils.Factory;
 
 import BESA.Kernel.Agent.StateBESA;
 import BESA.Kernel.Agent.StructBESA;
+import org.reflections.Reflections;
 
-import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class AgentFactory {
 
-    public static <T> T agentInstance(Class<T> agentClass, String alias, double passwd, StateBESA state) {
-        String location = "src/main/java/" + agentClass.getCanonicalName().replace(".", "/");
-        String behaviorLocation = location.substring(0, location.lastIndexOf("/")) + "/Behavior";
-        String classpath = agentClass.getCanonicalName().substring(0, agentClass.getCanonicalName().lastIndexOf("."));
-        List<Class<?>> behaviors = getBehaviors(behaviorLocation, classpath);
+    private static final Reflections reflections = new Reflections("sma.grupo3.Retailer");
+
+    public static <T> T agentInstance(Class<T> agentClass, Class<? extends Annotation> guardAnnotation, String alias, double passwd, StateBESA state) {
+        Set<Class<?>> annotated = reflections.getTypesAnnotatedWith(guardAnnotation);
         StructBESA structBESA = new StructBESA();
-        for (Class<?> guard : behaviors) {
+        for (Class<?> guard : annotated) {
             structBESA.bindGuard(guard);
         }
         try {
@@ -29,48 +28,6 @@ public class AgentFactory {
             return null;
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static List<Class<?>> getBehaviors(String location, String classpath) {
-        File folder = new File(location);
-        File[] listOfFiles = folder.listFiles();
-
-        List<Class<?>> behaviors = new ArrayList<>();
-
-        if (listOfFiles != null) {
-            for (File listOfFile : listOfFiles) {
-                if (listOfFile.isFile()) {
-                    String fileName = listOfFile.getName();
-                    int dot = fileName.indexOf(".");
-                    try {
-                        behaviors.add(ClassLoader.getSystemClassLoader().loadClass(classpath + ".Behavior." + fileName.substring(0, dot)));
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        return behaviors;
-    }
-
-    public static Class<?> getState(String location, String classpath) {
-        File folder = new File(location);
-        File[] listOfFiles = folder.listFiles();
-        assert listOfFiles != null;
-        for (File file : listOfFiles) {
-            if (file.isFile()) {
-                String fileName = file.getName().substring(0, file.getName().lastIndexOf("."));
-                if (fileName.endsWith("State")) {
-                    try {
-                        return ClassLoader.getSystemClassLoader().loadClass(classpath + fileName);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
         }
         return null;
     }

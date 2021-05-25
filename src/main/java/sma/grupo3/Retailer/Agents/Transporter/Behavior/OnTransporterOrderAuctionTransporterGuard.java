@@ -7,8 +7,11 @@ import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterOrderAuctionRespon
 import sma.grupo3.Retailer.Agents.Transporter.TransporterState;
 import sma.grupo3.Retailer.Agents.Warehouse.Behavior.OnTransporterOrderAuctionResponseWarehouseGuard;
 import sma.grupo3.Retailer.DistributedBehavior.ConnectionMap;
+import sma.grupo3.Retailer.SharedDomain.Annotations.TransporterGuard;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 
+
+@TransporterGuard
 public class OnTransporterOrderAuctionTransporterGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {

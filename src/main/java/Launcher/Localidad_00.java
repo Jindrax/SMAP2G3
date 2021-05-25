@@ -7,6 +7,7 @@ import sma.grupo3.Retailer.DistributedBehavior.CustomerCreation.CustomerCreator;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.SharedDomain.Statistics;
 import sma.grupo3.Retailer.Utils.Configuration;
+import sma.grupo3.Retailer.Utils.ConsoleRainbow;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class Localidad_00 {
             FileInputStream fileInputStream = new FileInputStream(scenarioFile);
             ObjectInputStream inputStream = new ObjectInputStream(fileInputStream);
             ExperimentalScenario scenario = (ExperimentalScenario) inputStream.readObject();
+            ConsoleRainbow.good("Iniciando simulacion con " + scenario.getCustomersCount() + " clientes");
             Statistics.setMaxCustomers(scenario.getCustomersCount());
             CustomerCreator customerCreator = new CustomerCreator();
             customerCreator.startProduction(admBESA, scenario);

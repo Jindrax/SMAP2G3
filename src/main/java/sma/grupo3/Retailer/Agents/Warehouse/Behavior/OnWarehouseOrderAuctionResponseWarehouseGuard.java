@@ -8,7 +8,9 @@ import sma.grupo3.Retailer.Agents.Warehouse.Data.WarehouseOrderAuction;
 import sma.grupo3.Retailer.Agents.Warehouse.Data.WarehouseOrderAuctionResponse;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
+import sma.grupo3.Retailer.SharedDomain.Annotations.WarehouseGuard;
 
+@WarehouseGuard
 public class OnWarehouseOrderAuctionResponseWarehouseGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {

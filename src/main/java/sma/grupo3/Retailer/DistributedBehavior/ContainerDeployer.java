@@ -4,6 +4,7 @@ import BESA.Kernel.System.AdmBESA;
 import Experiment.ExperimentalScenario;
 import sma.grupo3.Retailer.Agents.Controller.ControllerAgent;
 import sma.grupo3.Retailer.Agents.Controller.ControllerState;
+import sma.grupo3.Retailer.SharedDomain.Annotations.ControllerGuard;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
 
 import java.io.FileInputStream;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class ContainerDeployer {
     public static AdmBESA deploy(String containerConfig, Localities locality) {
         AdmBESA admBESA = AdmBESA.getInstance(containerConfig);
-        ControllerAgent controllerAgent = AgentFactory.agentInstance(ControllerAgent.class, locality.value, 0.24,
+        ControllerAgent controllerAgent = AgentFactory.agentInstance(ControllerAgent.class, ControllerGuard.class, locality.value, 0.24,
                 new ControllerState(
                         locality,
                         Arrays.stream(Localities.values()).filter(localities -> localities.enable).filter(localities -> locality != localities).map(localities -> localities.value).collect(Collectors.toSet())
@@ -43,7 +44,7 @@ public class ContainerDeployer {
             ObjectInputStream inputStream = new ObjectInputStream(fileInputStream);
             ExperimentalScenario scenario = (ExperimentalScenario) inputStream.readObject();
             AdmBESA admBESA = AdmBESA.getInstance(containerConfig);
-            ControllerAgent controllerAgent = AgentFactory.agentInstance(ControllerAgent.class, locality.value, 0.24,
+            ControllerAgent controllerAgent = AgentFactory.agentInstance(ControllerAgent.class, ControllerGuard.class, locality.value, 0.24,
                     new ControllerState(
                             locality,
                             Arrays.stream(Localities.values()).filter(localities -> localities.enable).filter(localities -> locality != localities).map(localities -> localities.value).collect(Collectors.toSet())

@@ -12,6 +12,7 @@ import sma.grupo3.Retailer.DistributedBehavior.ConnectionMap;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
+import sma.grupo3.Retailer.SharedDomain.Annotations.TransporterGuard;
 import sma.grupo3.Retailer.SharedDomain.StandardMalfunction;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 import sma.grupo3.Retailer.SharedDomain.TransportCommandType;
@@ -26,6 +27,8 @@ import java.util.Set;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
+
+@TransporterGuard
 public class OnMoveRequestTransporterGuard extends GuardBESA {
 
     private static final boolean cooperativeBehavior = Configuration.getBoolean("COOPERATIVE_BEHAVIOR");

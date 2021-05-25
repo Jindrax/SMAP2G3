@@ -10,10 +10,12 @@ import sma.grupo3.Retailer.Agents.Warehouse.Data.TransporterCommandFromWarehouse
 import sma.grupo3.Retailer.Agents.Warehouse.Data.TransporterOrderAuction;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
+import sma.grupo3.Retailer.SharedDomain.Annotations.WarehouseGuard;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 import sma.grupo3.Retailer.SharedDomain.TransportCommandType;
 
+@WarehouseGuard
 public class OnTransporterOrderAuctionResponseWarehouseGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {

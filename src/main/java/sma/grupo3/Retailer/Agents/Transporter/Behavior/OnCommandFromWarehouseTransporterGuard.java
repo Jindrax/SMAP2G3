@@ -9,11 +9,13 @@ import sma.grupo3.Retailer.Agents.Transporter.TransporterState;
 import sma.grupo3.Retailer.Agents.Warehouse.Data.TransporterCommandFromWarehouse;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
+import sma.grupo3.Retailer.SharedDomain.Annotations.TransporterGuard;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 import sma.grupo3.Retailer.SharedDomain.TransportCommand;
 
 import java.util.Optional;
 
+@TransporterGuard
 public class OnCommandFromWarehouseTransporterGuard extends GuardBESA {
 
     @Override

@@ -1,0 +1,12 @@
+Statistics for experiment with cooperative behavior in 80 customers:
+	Average customer rating: 9,749093
+	Average time to finish: 1040,650000
+Statistics for experiment with non cooperative behavior in 80 customers:
+	Average customer rating: 9,107318
+	Average time to finish: 3716,475000
+Statistics for experiment with non cooperative behavior in 80 customers:
+	Average customer rating: 9,518794
+	Average time to finish: 3060,137500
+Statistics for experiment with non cooperative behavior in 80 customers:
+	Average customer rating: 9,203633
+	Average time to finish: 4122,812500

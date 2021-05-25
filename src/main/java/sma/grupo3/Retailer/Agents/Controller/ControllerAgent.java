@@ -19,6 +19,8 @@ import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
 import sma.grupo3.Retailer.DistributedBehavior.Localities;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
+import sma.grupo3.Retailer.SharedDomain.Annotations.TransporterGuard;
+import sma.grupo3.Retailer.SharedDomain.Annotations.WarehouseGuard;
 import sma.grupo3.Retailer.SharedDomain.Catalog;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
 import sma.grupo3.Retailer.Utils.GUI.LocalityDashboard;
@@ -79,6 +81,7 @@ public class ControllerAgent extends AgentBESA {
         if (locality.isThereWarehouse) {
             ControllerState state = (ControllerState) this.getState();
             WarehouseAgent warehouse = AgentFactory.agentInstance(WarehouseAgent.class,
+                    WarehouseGuard.class,
                     locality.value + "_" + StandardServices.WAREHOUSE,
                     0.5,
                     new WarehouseState(locality, ((ControllerState) getState()).getDashboard()));
@@ -94,6 +97,7 @@ public class ControllerAgent extends AgentBESA {
         if (locality.isThereWarehouse) {
             ControllerState state = (ControllerState) this.getState();
             WarehouseAgent warehouse = AgentFactory.agentInstance(WarehouseAgent.class,
+                    WarehouseGuard.class,
                     locality.value + "_" + StandardServices.WAREHOUSE,
                     0.5,
                     new WarehouseState(locality, ((ControllerState) getState()).getDashboard(), stock));
@@ -111,6 +115,7 @@ public class ControllerAgent extends AgentBESA {
         Set<String> batchIds = new HashSet<>();
         for (int i = 0; i < locality.fleetSize; i++) {
             TransporterAgent transporterAgent = AgentFactory.agentInstance(TransporterAgent.class,
+                    TransporterGuard.class,
                     locality.value + "_" + StandardServices.TRANSPORTER + "_" + i,
                     0.6,
                     new TransporterState(locality, dashboard));

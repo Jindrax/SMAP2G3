@@ -6,8 +6,10 @@ import BESA.Kernel.Agent.GuardBESA;
 import sma.grupo3.Retailer.Agents.Warehouse.Data.WarehouseOrderAuctionResponse;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
 import sma.grupo3.Retailer.DistributedBehavior.ConnectionMap;
+import sma.grupo3.Retailer.SharedDomain.Annotations.WarehouseGuard;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 
+@WarehouseGuard
 public class OnWarehouseOrderAuctionWarehouseGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {

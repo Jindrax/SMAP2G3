@@ -20,6 +20,7 @@ public class LocalityDashboard extends JFrame {
 
     public LocalityDashboard(String title) throws HeadlessException {
         super(title);
+        this.fleetTableIndex = new Hashtable<>();
         GridLayout layout = new GridLayout(2, 1);
         setLayout(layout);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,7 +37,6 @@ public class LocalityDashboard extends JFrame {
         this.fleetTable.getColumnModel().getColumn(0).setPreferredWidth(300);
         this.fleetTable.getColumnModel().getColumn(1).setPreferredWidth(200);
         this.fleetTable.getColumnModel().getColumn(2).setPreferredWidth(200);
-        this.fleetTableIndex = new Hashtable<>();
         add(fleetTable);
         setResizable(false);
         pack();
@@ -66,14 +66,22 @@ public class LocalityDashboard extends JFrame {
     }
 
     public void updateFleetMemberLocality(String alias, Localities locality) {
-        int index = this.fleetTableIndex.get(alias);
-        this.fleetModel.setValueAt(locality.value, index, 1);
-        this.fleetModel.updateRow(index);
+        Integer index = this.fleetTableIndex.get(alias);
+        if (index != null) {
+            if (this.fleetModel != null) {
+                this.fleetModel.setValueAt(locality.value, index, 1);
+                this.fleetModel.updateRow(index);
+            }
+        }
     }
 
     public void updateFleetMemberState(String alias, TransporterStateEnum state) {
-        int index = this.fleetTableIndex.get(alias);
-        this.fleetModel.setValueAt(state.name(), index, 2);
-        this.fleetModel.updateRow(index);
+        Integer index = this.fleetTableIndex.get(alias);
+        if (index != null) {
+            if (this.fleetModel != null) {
+                this.fleetModel.setValueAt(state.name(), index, 2);
+                this.fleetModel.updateRow(index);
+            }
+        }
     }
 }

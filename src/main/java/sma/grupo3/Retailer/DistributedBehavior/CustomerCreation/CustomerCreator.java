@@ -5,6 +5,7 @@ import Experiment.CustomerSkeleton;
 import Experiment.ExperimentalScenario;
 import sma.grupo3.Retailer.Agents.Customer.CustomerAgent;
 import sma.grupo3.Retailer.Agents.Customer.CustomerState;
+import sma.grupo3.Retailer.SharedDomain.Annotations.CustomerGuard;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 import sma.grupo3.Retailer.Utils.Factory.AgentFactory;
 
@@ -28,7 +29,7 @@ public class CustomerCreator {
                 CustomerSkeleton skeleton = scenario.getCustomerQueue().poll();
                 if (skeleton != null) {
                     CustomerState state = new CustomerState();
-                    CustomerAgent agent = AgentFactory.agentInstance(CustomerAgent.class, skeleton.getAlias(), 0.8, state);
+                    CustomerAgent agent = AgentFactory.agentInstance(CustomerAgent.class, CustomerGuard.class, skeleton.getAlias(), 0.8, state);
                     if (agent != null) {
                         CustomerOrder order = new CustomerOrder(skeleton.getLocality(), agent.getAlias(), skeleton.getRequiredProduct(), skeleton.getRequiredQuantity());
                         state.setActiveOrder(order);

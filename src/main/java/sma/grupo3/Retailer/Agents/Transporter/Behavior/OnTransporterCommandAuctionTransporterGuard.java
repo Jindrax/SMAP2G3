@@ -6,8 +6,10 @@ import BESA.Kernel.Agent.GuardBESA;
 import sma.grupo3.Retailer.Agents.Transporter.Data.TransporterCommandAuctionResponse;
 import sma.grupo3.Retailer.Agents.Transporter.TransporterState;
 import sma.grupo3.Retailer.DistributedBehavior.ConnectionMap;
+import sma.grupo3.Retailer.SharedDomain.Annotations.TransporterGuard;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 
+@TransporterGuard
 public class OnTransporterCommandAuctionTransporterGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {

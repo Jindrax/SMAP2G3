@@ -12,12 +12,15 @@ import sma.grupo3.Retailer.Agents.Warehouse.WarehouseAgent;
 import sma.grupo3.Retailer.Agents.Warehouse.WarehouseState;
 import sma.grupo3.Retailer.DistributedBehavior.Services;
 import sma.grupo3.Retailer.DistributedBehavior.StandardServices;
+import sma.grupo3.Retailer.SharedDomain.Annotations.WarehouseGuard;
 import sma.grupo3.Retailer.Utils.Configuration;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+@WarehouseGuard
 public class OnCustomerOrderPlacedWarehouseGuard extends GuardBESA {
 
     private static final boolean cooperativeBehavior = Configuration.getBoolean("COOPERATIVE_BEHAVIOR");

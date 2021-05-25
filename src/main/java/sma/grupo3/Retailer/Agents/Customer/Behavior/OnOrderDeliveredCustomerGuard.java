@@ -5,11 +5,13 @@ import BESA.Kernel.Agent.Event.EventBESA;
 import BESA.Kernel.Agent.GuardBESA;
 import sma.grupo3.Retailer.Agents.Customer.CustomerAgent;
 import sma.grupo3.Retailer.Agents.Customer.CustomerState;
+import sma.grupo3.Retailer.SharedDomain.Annotations.CustomerGuard;
 import sma.grupo3.Retailer.SharedDomain.CustomerOrder;
 import sma.grupo3.Retailer.SharedDomain.CustomerRating;
 import sma.grupo3.Retailer.SharedDomain.Statistics;
 import sma.grupo3.Retailer.Utils.ConsoleRainbow;
 
+@CustomerGuard
 public class OnOrderDeliveredCustomerGuard extends GuardBESA {
     @Override
     public void funcExecGuard(EventBESA eventBESA) {
